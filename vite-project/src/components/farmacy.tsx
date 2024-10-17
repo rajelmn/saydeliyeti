@@ -38,14 +38,35 @@ export default function App() {
       console.log(medicamentObj);
       setPharmacyItems((prev) => [...prev, medicamentObj]);
       setShowNew((prev: boolean) => !prev);
-   
-    
-  } catch (err) {
-    console.log(err);
-  }
-  
-}
+      const res = await fetch("/api/storeMedicament", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(medicamentObj),
+      });
+      // const allMeds = await res.json();
+      // console.log(allMeds);
+      console.log(res.ok);
+    } catch (err) {
+      console.log(err);
+    }
 
+  }
+  useEffect(() => {
+    console.log('fires')
+    async function getAllMeds() {
+      try {
+        const res = await fetch('/api/getMedicament');
+        const allMeds:Item[] = await res.json();
+        console.log(res.ok)
+        setPharmacyItems(allMeds);
+      } catch(err) {
+        console.log(err)
+      }
+    }
+    getAllMeds();
+  }, [])
   return (
     <>
       <Farmacy pharmacyItems={pharmacyItems} handleClick={handleClick} />
