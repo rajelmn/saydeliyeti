@@ -2,3 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.row-container {
+    grid-template-columns: auto auto auto auto auto auto auto ;
+}
+
+.box {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.form-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: auto auto;
+}

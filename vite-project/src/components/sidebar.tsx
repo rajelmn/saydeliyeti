@@ -1,6 +1,6 @@
 // import { useState } from "react";
 import { BiHomeAlt2 } from "react-icons/bi";
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { IoEllipsisVerticalSharp } from "react-icons/io5";
 import { TbReportMedical } from "react-icons/tb";
 import src from "./logo.png";
@@ -16,16 +16,18 @@ export default function SideBar() {
           <p className="opacity-70">General</p>
           <IoEllipsisVerticalSharp />
         </div>
-        <Link to={"/farmacy"}>
-        <div className="items pl-[22px] cursor-pointer hover:bg-[#EFF1F3] w-[90%] mr-6 rounded-xl flex items-center mt-3">
-          <BiHomeAlt2 className="text-2xl opacity-65" />
-          <p className="pl-2">Home</p>
-        </div>
+        <Link to={"/"}>
+          <div className="items pl-[22px] cursor-pointer hover:bg-[#EFF1F3] w-[90%] mr-6 rounded-xl flex items-center mt-3">
+            <BiHomeAlt2 className="text-2xl opacity-65" />
+            <p className="pl-2">Home</p>
+          </div>
         </Link>
-        <div className="items pl-[22px] cursor-pointer hover:bg-[#EFF1F3] w-[90%] mr-6 rounded-xl flex items-center mt-3">
-          <TbReportMedical className="text-2xl opacity-65" />
-          <p className="pl-2">pharmaceutique</p>
-        </div>
+        <Link to="/farmacy">
+          <div className="items pl-[22px] cursor-pointer hover:bg-[#EFF1F3] w-[90%] mr-6 rounded-xl flex items-center mt-3">
+            <TbReportMedical className="text-2xl opacity-65" />
+            <p className="pl-2">pharmaceutique</p>
+          </div>
+        </Link>
       </div>
     </div>
   );
