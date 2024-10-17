@@ -1,7 +1,8 @@
 import Header from "./header";
 import { MdAdd } from "react-icons/md";
 import { AddNewPopUp } from "./AddNewPopup";
-import { useState } from "react";
+import Table from "./table";
+import { useEffect, useState } from "react";
 
 interface Item {
   medicament: string;
@@ -37,11 +38,14 @@ export default function App() {
       console.log(medicamentObj);
       setPharmacyItems((prev) => [...prev, medicamentObj]);
       setShowNew((prev: boolean) => !prev);
-     
-    } catch (err) {
-      console.log(err);
-    }
+   
+    
+  } catch (err) {
+    console.log(err);
   }
+  
+}
+
   return (
     <>
       <Farmacy pharmacyItems={pharmacyItems} handleClick={handleClick} />
@@ -68,60 +72,16 @@ export function Farmacy({
       <main className="w-full h-[92vh]  p-14">
         <div className="content mt-9">
           <button
-            className="flex p-2 items-center font-bold bg-[#0CA63A] rounded-lg text-white"
+            className="flex p-2 items-center font-bold bg-blue-600 mb-4 rounded-lg text-white"
             onClick={handleClick}
           >
             <span>Add New</span>
             <MdAdd className="text-white" />
           </button>
-          <div className=" row-container mt-3 grid w-full">
-            <div className="row border border-solid border-black">
-              medicaments
-            </div>
-            <div className="row border border-solid border-black">Stock</div>
-            <div className="row border border-solid border-black">
-              quantite vendue
-            </div>
-            <div className="row border border-solid border-black">
-              prix d'achats
-            </div>
-            <div className="row border border-solid border-black">
-              prix de vente
-            </div>
-            <div className="row border border-solid border-black">
-              New Stock
-            </div>
-            <div className="row border border-solid border-black">caisse</div>
-            {pharmacyItems.map((row: Item) => (
-              <>
-                {/* {console.log(row)} */}
-                <div className="row border border-solid border-black">
-                  {row.medicament}
-                </div>
-                <div className="row border border-solid border-black">
-                  {row.stock}
-                </div>
-                <div className="row border border-solid border-black">
-                  {row.qty}
-                </div>
-                <div className="row border border-solid border-black">
-                  {row.priceBuy}
-                </div>
-                <div className="row border border-solid border-black">
-                  {row.priceSell}
-                </div>
-                <div className="row border border-solid border-black">
-                  {row.stock - row.qty}
-                </div>
-                <div className="row border border-solid border-black">
-                  {row.qty * row.priceSell}
-                </div>
-              </>
-            ))}
-          </div>
+         
+        <Table medicament={pharmacyItems} />
         </div>
       </main>
     </div>
   );
 }
-
