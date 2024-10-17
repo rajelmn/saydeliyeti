@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 interface Table {
     medicament: {
         medicament: string;
@@ -10,6 +12,18 @@ interface Table {
     }[]
   }
 export default function Table({ medicament }: Table) {
+    const [tableItems, setTableItems] = useState<Table["medicament"]>(medicament);
+    function handleSearch(e: any) {
+        const item = medicament.filter(item => item.medicament.includes(e.target.value));
+        if(e.target.value.length) {
+            setTableItems(item)
+        } else {
+            setTableItems(medicament);
+        }
+    }
+    useEffect(() => {
+        setTableItems(medicament)
+    }, [medicament])
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <div className="pb-4 bg-white dark:bg-gray-900">
@@ -37,6 +51,7 @@ export default function Table({ medicament }: Table) {
           <input
             type="text"
             id="table-search"
+            onChange={handleSearch}
             className="block outline-none pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Search for items"
           />
@@ -78,7 +93,7 @@ export default function Table({ medicament }: Table) {
           </tr>
         </thead>
         <tbody>
-         {medicament.sort((a, b) => a.medicament.localeCompare(b.medicament)).map((item: any) => 
+         {tableItems.sort((a, b) => a.medicament.localeCompare(b.medicament)).map((item: any) => 
              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
              <td className="w-4 p-4">
                <div className="flex items-center">
