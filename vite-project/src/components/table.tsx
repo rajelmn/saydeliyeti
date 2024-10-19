@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
-
-interface Table {
-    medicament: {
-        medicament: string;
-        stock: number;
-        qty: number;
-        priceSell: number;
-        priceBuy: number;
-        date: string;
-        id: string;
-    }[]
-  }
-export default function Table({ medicament }: Table) {
-    const [tableItems, setTableItems] = useState<Table["medicament"]>(medicament);
+import {TableProps} from '../../server/interface.ts'
+// interface Table {
+//     medicament: {
+//         medicament: string;
+//         stock: number;
+//         qty: number;
+//         priceSell: number;
+//         priceBuy: number;
+//         date: string;
+//         id: string;
+//     }[],
+//     setIsSelling: (arg: boolean) => void ,
+//   }
+export default function Table({ medicament , setSelledMed}: TableProps) {
+    const [tableItems, setTableItems] = useState<TableProps["medicament"]>(medicament);
     function handleSearch(e: any) {
-        const item = medicament.filter(item => item.medicament.includes(e.target.value));
+        const item = medicament.filter((item) => item.medicament.includes(e.target.value));
         if(e.target.value.length) {
             setTableItems(item)
         } else {
@@ -25,7 +26,7 @@ export default function Table({ medicament }: Table) {
         setTableItems(medicament)
     }, [medicament])
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div className=" overflow-x-auto shadow-md sm:rounded-lg">
       <div className="pb-4 bg-white dark:bg-gray-900">
         <label htmlFor="table-search" className="sr-only">
           Search
@@ -79,7 +80,7 @@ export default function Table({ medicament }: Table) {
               Stock
             </th>
             <th scope="col" className="px-4 py-3">
-              Quantite
+              Quantite Vendue
             </th>
             <th scope="col" className="px-4 py-3">
               Prix D'achats
@@ -88,12 +89,24 @@ export default function Table({ medicament }: Table) {
               Prix de vente
             </th>
             <th scope="col" className="px-4 py-3">
+              Nouveau Stock
+            </th>
+            <th scope="col" className="px-4 py-3">
+              Caise
+            </th>
+            <th scope="col" className="px-4 py-3">
               Action
             </th>
           </tr>
         </thead>
         <tbody>
+          {tableItems.length === 0 && (
+            <td className="text-2xl text-red-400">Not Found</td>
+          )}
          {tableItems.sort((a, b) => a.medicament.localeCompare(b.medicament)).map((item: any) => 
+         <>
+         {item.stock > 0 && (
+
              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
              <td className="w-4 p-4">
                <div className="flex items-center">
@@ -115,10 +128,15 @@ export default function Table({ medicament }: Table) {
              </th>
              <td className="px-6 py-4">{item.stock}</td>
              <td className="px-6 py-4">{item.qty}</td>
-             <td className="px-6 py-4">{item.priceSell}</td>
              <td className="px-6 py-4">{item.priceBuy}</td>
+             <td className="px-6 py-4">{item.priceSell}</td>
+             <td className="px-6 py-4">{item.stock - item.qty}</td>
+             <td className="px-6 py-4">{item.qty * item.priceSell}</td>
              <td className="px-6 py-4">
                <p
+                onClick={() => {
+                  setSelledMed(item);
+                }}
                  className="font-medium cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
                >
                  SELL
@@ -126,6 +144,8 @@ export default function Table({ medicament }: Table) {
              </td>
            </tr>
          )}
+         </>
+         )} 
         </tbody>
       </table>
     </div>

@@ -16,13 +16,13 @@ export default function SideBar() {
           <p className="opacity-70">General</p>
           <IoEllipsisVerticalSharp />
         </div>
-        <Link to={"/"}>
+        <Link to={"/home"}>
           <div className="items pl-[22px] cursor-pointer hover:bg-[#EFF1F3] w-[90%] mr-6 rounded-xl flex items-center mt-3">
             <BiHomeAlt2 className="text-2xl opacity-65" />
             <p className="pl-2">Home</p>
           </div>
         </Link>
-        <Link to="/farmacy">
+        <Link to="/">
           <div className="items pl-[22px] cursor-pointer hover:bg-[#EFF1F3] w-[90%] mr-6 rounded-xl flex items-center mt-3">
             <TbReportMedical className="text-2xl opacity-65" />
             <p className="pl-2">pharmaceutique</p>
