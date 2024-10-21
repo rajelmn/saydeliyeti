@@ -2,6 +2,7 @@
   "files": [],
   "compilerOptions": {
     "esModuleInterop": true,
+    
   },
   "references": [
     { "path": "./tsconfig.app.json" },

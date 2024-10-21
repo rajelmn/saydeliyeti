@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {TableProps} from '../../server/interface.ts'
+import TableProps from '../../server/interface.ts'
 // interface Table {
 //     medicament: {
 //         medicament: string;
@@ -14,12 +14,15 @@ import {TableProps} from '../../server/interface.ts'
 //   }
 export default function Table({ medicament , setSelledMed}: TableProps) {
     const [tableItems, setTableItems] = useState<TableProps["medicament"]>(medicament);
+    const [isSearching, setIsSearching] = useState<boolean>(false);
     function handleSearch(e: any) {
         const item = medicament.filter((item) => item.medicament.includes(e.target.value));
         if(e.target.value.length) {
-            setTableItems(item)
+            setTableItems(item);
+            setIsSearching(true)
         } else {
             setTableItems(medicament);
+            setIsSearching(false)
         }
     }
     useEffect(() => {
@@ -100,7 +103,7 @@ export default function Table({ medicament , setSelledMed}: TableProps) {
           </tr>
         </thead>
         <tbody>
-          {tableItems.length === 0 && (
+          {(tableItems.length === 0 && isSearching) && (
             <td className="text-2xl text-red-400">Not Found</td>
           )}
          {tableItems.sort((a, b) => a.medicament.localeCompare(b.medicament)).map((item: any) => 

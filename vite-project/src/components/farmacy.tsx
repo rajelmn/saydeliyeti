@@ -46,7 +46,7 @@ export default function App() {
       );
 
       setSelledMed(null);
-      const res = await fetch("/updateMed", {
+      const res = await fetch("/api/updateMed", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -77,10 +77,22 @@ export default function App() {
         date: e.target.date.value || date.toTimeString(),
         id: crypto.randomUUID(),
       };
-      console.log(medicamentObj);
+      const {stock , qty, priceSell, priceBuy} = medicamentObj;
+      if(+stock < +qty) {
+        return alert('the stock cant be less than the selled qty')
+      }
+      if(+priceSell < +priceBuy) {
+        return alert('the sell price shouldnt be less than the real price')
+      }
+      if(pharmacyItems.find(item => item.medicament === medicamentObj.medicament)) {
+        return alert ('the medicament already exist, did you meant to insert another version ?')
+      }
+      if(+stock <= 0 || +qty <= 0 || +priceSell <= 0 || +priceBuy <= 0) {
+        return alert('input values shouldnt have any value less or equal to 0')
+      }
       setPharmacyItems((prev) => [...prev, medicamentObj]);
       setShowNew((prev: boolean) => !prev);
-      const res = await fetch("/storeMedicament", {
+      const res = await fetch("/api/storeMedicament", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +110,7 @@ export default function App() {
     console.log("fires");
     async function getAllMeds() {
       try {
-        const res = await fetch("/getMedicament");
+        const res = await fetch("/api/getMedicament");
         const allMeds: Item[] = await res.json();
         console.log(res.ok);
         console.log(allMeds, "all the fucking meds");

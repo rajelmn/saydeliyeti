@@ -1,5 +1,4 @@
 
-
 export type medicamentObj = {
     medicament: string;
     stock: number;
@@ -10,7 +9,7 @@ export type medicamentObj = {
     id: string;
 }
 
-export interface TableProps {
+export default interface TableProps {
 
     medicament: {
         medicament: string;

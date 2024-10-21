@@ -20,6 +20,14 @@ const db = new verbose.Database("./mydb", (err) => {
 
 app.use(express.json());
 
+app.get('/delete', (req, res) => {
+  db.run('DELETE FROM medicaments', (err) => {
+    if(err) {
+      console.log(err)
+    }
+  })
+  res.send('welcome')
+})
 app.post("/storeMedicament", (req, res) => {
   try {
     const medicament: medicamentObj = req.body;
@@ -84,11 +92,11 @@ app.get("/getMedicament", (req, res) => {
   }
 });
 
-app.use('/images', express.static('images'))
-app.use(express.static('dist'))
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'dist/index.html'))
-})
+// app.use('/images', express.static('images'))
+// app.use(express.static('dist'))
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '..', 'dist/index.html'))
+// })
 
 
 app.listen(PORT, () => {
