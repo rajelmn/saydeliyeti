@@ -5,6 +5,7 @@ import Farmacy from './components/farmacy.tsx';
 import App from "./App.tsx";
 import Home from './components/home.tsx';
 import "./index.css";
+import LimitedMeds from "./components/limitedMeds.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
         path: "/home",
         element: <Home />
       }, 
+      {
+        path: "/limited", 
+        element: <LimitedMeds />
+      },
     {
       index: true,
       // path: "/farmacy",

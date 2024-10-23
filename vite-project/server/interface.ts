@@ -21,7 +21,8 @@ export default interface TableProps {
         id: string;
     }[],
     // setIsSelling: (arg: boolean) => void ,
-    setSelledMed: ((arg: medicamentObj | null) => void)
+    setSelledMed: ((arg: medicamentObj | null) => void) | null,
+    readOnly: boolean,
   }
 
 export interface SellModalProps {

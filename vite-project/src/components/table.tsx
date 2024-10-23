@@ -12,11 +12,12 @@ import TableProps from '../../server/interface.ts'
 //     }[],
 //     setIsSelling: (arg: boolean) => void ,
 //   }
-export default function Table({ medicament , setSelledMed}: TableProps) {
+export default function Table({ medicament , readOnly ,setSelledMed}: TableProps) {
     const [tableItems, setTableItems] = useState<TableProps["medicament"]>(medicament);
     const [isSearching, setIsSearching] = useState<boolean>(false);
     function handleSearch(e: any) {
         const item = medicament.filter((item) => item.medicament.includes(e.target.value));
+        console.log(item)
         if(e.target.value.length) {
             setTableItems(item);
             setIsSearching(true)
@@ -108,7 +109,7 @@ export default function Table({ medicament , setSelledMed}: TableProps) {
           )}
          {tableItems.sort((a, b) => a.medicament.localeCompare(b.medicament)).map((item: any) => 
          <>
-         {item.stock > 0 && (
+         {(item.stock - item.qty) > 0 && (
 
              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
              <td className="w-4 p-4">
@@ -136,14 +137,18 @@ export default function Table({ medicament , setSelledMed}: TableProps) {
              <td className="px-6 py-4">{item.stock - item.qty}</td>
              <td className="px-6 py-4">{item.qty * item.priceSell}</td>
              <td className="px-6 py-4">
-               <p
+               {!readOnly && (
+                <p
                 onClick={() => {
-                  setSelledMed(item);
+                  if(setSelledMed !== null) {
+                    setSelledMed(item);
+                  }
                 }}
                  className="font-medium cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
                >
                  SELL
                </p>
+               )}
              </td>
            </tr>
          )}
