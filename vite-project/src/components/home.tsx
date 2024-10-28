@@ -1,7 +1,28 @@
 // import { useState } from "react"
+import { useEffect, useState } from "react";
 import { FaMoneyBillAlt } from "react-icons/fa";
+import { statistics } from "../../server/interface.ts";
 import Header from "./header.tsx";
 export default function Home() {
+    const [details, setDetails] = useState<statistics[]>([]);
+
+    async function handleDateChange() {
+
+    }
+
+    useEffect(() => {
+        async function getStatistics() {
+            try {
+                const res = await fetch('/api/statistics');
+                if(res.ok) {
+                    const data = await res.json();
+                    setDetails(data);
+                }
+            } catch(err) {
+                console.log(err);
+            }
+        }
+    }, [])
   return (
     <div className="w-[calc(100vw-300px)] bg-[white]/20">
       <Header room="home" />
@@ -12,7 +33,10 @@ export default function Home() {
             View the details about the pharamacy sales
           </p>
         </div>
-        <div className="flex-grow"></div>
+        <form onChange={handleDateChange} className="flex-grow">
+            {/* <label htmlFor="date">date</label> */}
+            <input id="date" name="date" type="date" className="border border-solid border-black"/>
+        </form>
       </div>
       <main className=" grid grid-cols-4 p-20 w-full justify-between">
         <div className="card-shadow m-3 py-4 px-2 ">

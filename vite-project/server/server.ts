@@ -1,5 +1,6 @@
 import express from "express";
-import sqlite3 from "sqlite3";
+import  Database  from "better-sqlite3";
+// import sqlite3 from "sqlite3";
 import { medicamentObj } from "./interface";
 // import path from 'node:path';
 // import { fileURLToPath } from "node:url";
@@ -9,15 +10,10 @@ import { medicamentObj } from "./interface";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const verbose = sqlite3.verbose();
-const db = new verbose.Database("./mydb", (err) => {
-  if (err) {
-    return console.log("couldnt connect to the db");
-  }
-  console.log("connected to the database");
-});
+// const verbose = sqlite3.verbose();
+const db = new Database("mydb");
 
-db.run(`CREATE TABLE IF NOT EXISTS medicaments(
+db.exec(`CREATE TABLE IF NOT EXISTS medicaments(
     medicament TEXT,
     stock INTEGER,
     qty INTEGER,
@@ -26,39 +22,33 @@ db.run(`CREATE TABLE IF NOT EXISTS medicaments(
     date TEXT,
     id TEXT
     )`);
+
+db.exec(`CREATE TABLE IF NOT EXISTS statistics(
+  date TEXT,
+  qty INTEGER,
+  profits INTEGER,
+  selled number,
+  details
+  )`);
 app.use(express.json());
 
-// app.get('/delete', (req, res) => {
-//   db.run('DELETE FROM medicaments', (err) => {
-//     if(err) {
-//       console.log(err)
-//     }
-//   })
-//   res.send('welcome')
-// })
+app.get("/delete", (req, res) => {
+  // db.run("DELETE FROM statistics", (err) => {
+  //   if (err) {
+  //     console.log(err);
+  //   }
+  // });
+  // res.send("welcome");
+});
 app.post("/storeMedicament", (req: any, res) => {
   try {
-    const medicament: medicamentObj = req.body;
-    console.log(medicament);
-    db.run(
-      "INSERT INTO medicaments Values(?, ?, ?, ?, ?, ?, ?)",
-      [
-        medicament.medicament,
-        medicament.stock,
-        medicament.qty,
-        medicament.priceSell,
-        medicament.priceBuy,
-        medicament.date,
-        medicament.id,
-      ],
-      (err: any, row: any) => {
-        if (err) {
-          return console.log(err);
-        }
-        console.log("row inserted ", row);
-        res.status(200).json({ message: "inserted" });
-      }
+    const medicaments: medicamentObj = req.body;
+    const {medicament, stock , qty, priceSell, priceBuy, date, id} = medicaments
+    const insertData = db.prepare(
+      "INSERT INTO medicaments Values(?, ?, ?, ?, ?, ?, ?)"
     );
+    // console.log(medicament);
+    insertData.run(medicament, stock, qty, priceSell, priceBuy, date, id)
   } catch (err) {
     console.log(err);
   }
@@ -80,37 +70,55 @@ app.post("/updateMed", (req, res) => {
         res.status(200).json({ message: "sucess" });
       }
     );
-  } catch (err) {
-    console.log(err);
-  }
-});
-app.get("/getMedicament", (req, res) => {
-  const smth = req?.body;
-  console.log(smth);
-  try {
-    db.all(
-      "SELECT medicament,stock,qty,priceSell,priceBuy,date,id FROM medicaments WHERE stock > 0",
-      (err, row) => {
-        if (err) {
-          console.log(err);
-          return res.send("error mate");
-        }
-        // console.log("here's your row ", row);
-        res.status(200).json(row);
-      }
-    );
+    // db.run('UPDATE statistics SET der')
   } catch (err) {
     console.log(err);
   }
 });
 
-app.get('/statistics', (req, res) => {
+app.get("/statistics", (req, res) => {
   try {
-    
-  } catch(err) {
-    console.log(err)
+    db.all("SELECT * FROM statistics", (err, row) => {
+      if (err) {
+        return console.log(err);
+      }
+      console.log(row);
+      return res.status(200).json(row);
+    });
+  } catch (err) {
+    console.log(err);
   }
-})
+});
+
+app.get("/getMedicament", (req, res) => {
+  const smth = req?.body;
+  console.log(smth);
+  try {
+    // db.all(
+    //   "SELECT medicament,stock,qty,priceSell,priceBuy,date,id FROM medicaments WHERE stock > 0",
+    //   (err, row) => {
+    //     if (err) {
+    //       console.log(err);
+    //       return res.send("error mate");
+    //     }
+    //     // console.log("here's your row ", row);
+    //     res.status(200).json(row);
+    //   }
+    // );
+    const getMeds = db.prepare('SELECT * FROM medicaments').all();
+    res.status(200).json(getMeds)
+
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.get("/statistics", (req, res) => {
+  try {
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 app.get("/limitedMeds", (req, res) => {
   try {
@@ -120,8 +128,8 @@ app.get("/limitedMeds", (req, res) => {
         if (err) {
           return console.log(err);
         }
-        console.log(row)
-        return res.status(200).json(row)
+        console.log(row);
+        return res.status(200).json(row);
       }
     );
   } catch (err) {

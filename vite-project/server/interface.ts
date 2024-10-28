@@ -9,6 +9,18 @@ export type medicamentObj = {
     id: string;
 }
 
+export type statistics = {
+    date: string,
+    qty: number,
+    profits: number,
+    selled: number,
+    // details: {
+    //     medicament: string,
+    //     selled: number,
+    //     id: string,
+    // }[]
+}
+
 export default interface TableProps {
 
     medicament: {

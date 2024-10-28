@@ -3,7 +3,7 @@ import { MdAdd } from "react-icons/md";
 import { AddNewPopUp } from "./AddNewPopup";
 import Table from "./table";
 import { SellModal } from "./modals";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Item {
   medicament: string;
@@ -30,7 +30,7 @@ export default function App() {
       e.preventDefault();
       if (!selledMed) return alert("no medicamnet selected");
 
-      if (selledMed.stock < e.target?.qty) {
+      if (selledMed.qty < e.target?.qty) {
         return alert("you are selling more than you chave");
       }
       setPharmacyItems((prev) =>
