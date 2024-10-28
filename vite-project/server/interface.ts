@@ -11,9 +11,11 @@ export type medicamentObj = {
 
 export type statistics = {
     date: string,
-    qty: number,
+    soldQty: number,
     profits: number,
-    selled: number,
+    sold: number,
+    purchases: number,
+    salesTotal: number,
     // details: {
     //     medicament: string,
     //     selled: number,

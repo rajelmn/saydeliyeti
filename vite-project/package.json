@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "npx tsc server/server.ts && node server/server.js",
+    "start": "npx tsx server/server.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "better-sqlite3": "^11.5.0",
+    "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "express": "^4.21.1",
     "nodemon": "^3.1.7",
     "react": "^18.3.1",

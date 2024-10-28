@@ -27,26 +27,30 @@ export default function App() {
 
   async function handleSell(e: any) {
     try {
+      alert('wasup')
       e.preventDefault();
+      console.log(selledMed)
       if (!selledMed) return alert("no medicamnet selected");
 
-      if (selledMed.qty < e.target?.qty) {
+      if (+selledMed.qty < e.target?.qty) {
         return alert("you are selling more than you chave");
       }
       setPharmacyItems((prev) =>
         prev.map((item) => {
+          console.log(typeof item.qty, 'typeof')
           if (item.id === selledMed?.id) {
             return {
               ...item,
-              qty: item.qty + +e.target.qty.value,
-              stock: item.stock - +e.target.qty.value,
+              qty: +item.qty + +e.target.qty.value,
+              date: new Date().toDateString()
+              // stock: item.stock - +e.target.qty.value,
             };
           } else return item;
         })
       );
 
       setSelledMed(null);
-      const res = await fetch("/api/updateMed", {
+      const res = await fetch("/updateMed", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +58,8 @@ export default function App() {
         body: JSON.stringify({
           ...selledMed,
           qty: selledMed ? selledMed?.qty + +e.target.qty.value : 0,
-          stock: selledMed ? selledMed?.stock - +e.target.qty.value : 0,
+          soldQty: +e.target.qty.value
+          // stock: selledMed ? selledMed?.stock - +e.target.qty.value : 0,
         }),
       });
       if (!res.ok) throw new Error();
@@ -92,7 +97,7 @@ export default function App() {
       }
       setPharmacyItems((prev) => [...prev, medicamentObj]);
       setShowNew((prev: boolean) => !prev);
-      const res = await fetch("/api/storeMedicament", {
+      const res = await fetch("/storeMedicament", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -110,7 +115,7 @@ export default function App() {
     console.log("fires");
     async function getAllMeds() {
       try {
-        const res = await fetch("/api/getMedicament");
+        const res = await fetch("/getMedicament");
         const allMeds: Item[] = await res.json();
         console.log(res.ok);
         console.log(allMeds, "all the fucking meds");
