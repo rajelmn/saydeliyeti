@@ -12,7 +12,7 @@ export default function Home() {
     try {
       const date = e.currentTarget.date.value;
       console.log(date === dateValue);
-      const res = await fetch("/statistics", {
+      const res = await fetch("/api/statistics", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export default function Home() {
 
   useEffect(() => {
     async function getStatistics() {
-      const res = await fetch("/statistics", {
+      const res = await fetch("/api/statistics", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

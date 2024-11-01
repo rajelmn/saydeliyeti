@@ -7,6 +7,7 @@ export type medicamentObj = {
     priceBuy: number;
     date: string;
     id: string;
+    edit?: boolean,
 }
 
 export type statistics = {
@@ -37,10 +38,13 @@ export default interface TableProps {
     // setIsSelling: (arg: boolean) => void ,
     setSelledMed: ((arg: medicamentObj | null) => void) | null,
     readOnly: boolean,
+    setIsBuying: ((arg: boolean) => void)  ,
   }
 
 export interface SellModalProps {
     medicamentObj: medicamentObj,
     handleSell: (e: any) => void,
-    setSelledMed: ((arg: medicamentObj | null) => void)
+    setSelledMed: ((arg: medicamentObj | null) => void),
+    isBuying: boolean,
+    handleBuy: (e: any) => void,
 }

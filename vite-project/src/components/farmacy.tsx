@@ -5,6 +5,7 @@ import Table from "./table";
 import { SellModal } from "./modals";
 import { useEffect, useState } from "react";
 
+
 interface Item {
   medicament: string;
   stock: number;
@@ -18,6 +19,7 @@ interface Item {
 export default function App() {
   const [showNew, setShowNew] = useState<boolean>(false);
   const [selledMed, setSelledMed] = useState<Item | null>(null);
+  const [isBuying, setIsBuying] = useState<boolean>(false);
   const [pharmacyItems, setPharmacyItems] = useState<Item[]>([]);
   function handleClick() {
     setShowNew((prev: boolean) => {
@@ -42,14 +44,13 @@ export default function App() {
             return {
               ...item,
               qty: +item.qty + +e.target.qty.value,
-              date: new Date().toDateString()
-              // stock: item.stock - +e.target.qty.value,
+              // date: new Date().toDateString()
+              stock: item.stock - +e.target.qty.value,
             };
           } else return item;
         })
       );
 
-      setSelledMed(null);
       const res = await fetch("/updateMed", {
         method: "post",
         headers: {
@@ -58,7 +59,48 @@ export default function App() {
         body: JSON.stringify({
           ...selledMed,
           qty: selledMed ? selledMed?.qty + +e.target.qty.value : 0,
-          soldQty: +e.target.qty.value
+          soldQty: +e.target.qty.value,
+          stock: selledMed ? selledMed?.stock - +e.target.qty.value : 0,
+        }),
+      });
+      setSelledMed(null);
+      if (!res.ok) throw new Error();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handleBuy(e: any) {
+    try {
+      alert('buying')
+      e.preventDefault();
+      console.log(selledMed)
+      if (!selledMed) return alert("no medicamnet selected");
+
+      setPharmacyItems((prev) =>
+        prev.map((item) => {
+          console.log(typeof item.qty, 'typeof')
+          if (item.id === selledMed?.id) {
+            return {
+              ...item,
+              // qty: +item.qty + +e.target.qty.value,
+              stock: +item.stock + +e.target.qty.value,
+            };
+          } else return item;
+        })
+      );
+
+      setSelledMed(null);
+      const res = await fetch("/buy", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...selledMed,
+          // qty: selledMed ? selledMed?.qty + +e.target.qty.value : 0,
+          stock: selledMed ? selledMed?.stock + +e.target.qty.value: 0,
+          buyQty: +e.target.qty.value
           // stock: selledMed ? selledMed?.stock - +e.target.qty.value : 0,
         }),
       });
@@ -132,6 +174,7 @@ export default function App() {
         setSelledMed={setSelledMed}
         pharmacyItems={pharmacyItems}
         handleClick={handleClick}
+        setIsBuying={setIsBuying}
       />
       {showNew && (
         <AddNewPopUp
@@ -142,6 +185,8 @@ export default function App() {
       {selledMed && (
         <SellModal
           handleSell={handleSell}
+          handleBuy={handleBuy}
+          isBuying = {isBuying}
           setSelledMed={setSelledMed}
           medicamentObj={selledMed}
         />
@@ -153,10 +198,12 @@ export function Farmacy({
   handleClick,
   pharmacyItems,
   setSelledMed,
+  setIsBuying
 }: {
   handleClick: () => void;
   pharmacyItems: Item[];
   setSelledMed: (arg: Item | null) => void;
+  setIsBuying: (arg: boolean) => void
 }) {
   // const [items, setItems] = useState([]);
   return (
@@ -172,7 +219,7 @@ export function Farmacy({
             <MdAdd className="text-white" />
           </button>
 
-          <Table readOnly={false} setSelledMed={setSelledMed} medicament={pharmacyItems} />
+          <Table setIsBuying={setIsBuying} readOnly={false} setSelledMed={setSelledMed} medicament={pharmacyItems} />
         </div>
       </main>
     </div>
