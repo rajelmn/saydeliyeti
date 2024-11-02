@@ -24,7 +24,7 @@ export default function LimitedMeds() {
         <div>
         <Header room="limited" />
         <div className="m-12">
-            <Table setSelledMed={null} readOnly={true} medicament={meds}/>
+            <Table setIsBuying={null} setSelledMed={null} readOnly={true} medicament={meds}/>
         </div>
         </div>
     )

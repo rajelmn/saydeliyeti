@@ -3,7 +3,6 @@ import { BiHomeAlt2 } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { IoEllipsisVerticalSharp } from "react-icons/io5";
 import { MdOutlineHourglassEmpty } from "react-icons/md";
-import { CiViewList as List } from "react-icons/ci";
 import { TbReportMedical } from "react-icons/tb";
 import src from "./logo.png";
 export default function SideBar() {

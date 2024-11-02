@@ -6,7 +6,7 @@ import { statistics } from "../../server/interface.ts";
 import Header from "./header.tsx";
 export default function Home() {
   const [details, setDetails] = useState<statistics>();
-  const [dateValue, setDateValue] = useState<string>(format(new Date(), "yyyy-MM-dd"))
+  const dateValue: string = format(new Date(), "yyyy-MM-dd");
   console.log(dateValue)
   async function handleDateChange(e: React.FormEvent<HTMLFormElement>) {
     try {

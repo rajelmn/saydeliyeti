@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaPlus as Plus } from "react-icons/fa";
+import {  FaPlus as Plus } from "react-icons/fa";
 import { MdModeEditOutline as Edit} from "react-icons/md";
 import TableProps, { medicamentObj } from "../../server/interface.ts";
 
@@ -14,7 +14,64 @@ export default function Table({
     useState<TableProps["medicament"]>([]);
     console.log(tableItems, 'another goddman');
     const [search, setSearch] = useState('');
+    console.log(tableItems)
     const [isSearching, setIsSearching] = useState<boolean>(false);
+
+    function handleEdit(med: medicamentObj) {
+      try {
+        setTableItems((prev) => 
+        prev.map((item: medicamentObj) => {
+          if(item?.id === med?.id) {
+            return {...item, edit: true}
+          }
+          return {...item, edit:false}
+        })
+      )
+      } catch(err) {
+        console.log(err)
+      }
+    } 
+    function handleMedChange(e: React.ChangeEvent<HTMLInputElement>, id: string): void {
+      const {name} = e.target;
+      setTableItems(prev => 
+        prev.map((item) => {
+          if(item.id === id) {
+            return {...item, [name]: e.target.value}
+          }
+          else return item
+        })
+      )
+    }
+
+    async function handleSubmitEdit(id: string) {
+      try {
+        const [editedItem] = tableItems.filter(item => item.id === id);
+        console.log(typeof editedItem.priceBuy, typeof editedItem.priceSell)
+        if(+editedItem.priceSell < +editedItem.priceBuy) {
+          return alert("le prix vendu de l'objet ne peut être inférieur au prix d'achat")
+        }
+        setTableItems(prev => 
+          prev.map((item) => {
+            return {...item, edit:false}
+          })
+        )
+
+        const res = await fetch("/editMed", {
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(editedItem)
+        })
+        if(!res.ok) {
+          throw new Error("oops")
+        }
+
+      } catch(err){
+        console.log(err)
+      }
+    }
+
   useEffect(() => {
     setTableItems(medicament);
   }, [medicament]);
@@ -23,7 +80,7 @@ export default function Table({
       console.log('search', search)
       async function handleSearch(): Promise<void> {
         try {
-          const res = await fetch(`/api/search/${search}`);
+          const res = await fetch(`/search/${search}`);
             const searchedItems = await res.json();
           console.log(res)
           if(!search.length) {
@@ -64,7 +121,12 @@ export default function Table({
           <input
             type="text"
             id="table-search"
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={
+              (e) => {
+                setIsSearching(true);
+                setSearch(e.target.value)
+              }
+            }
             className="block outline-none pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Search for items"
           />
@@ -117,7 +179,7 @@ export default function Table({
           </tr>
         </thead>
         <tbody>
-          {tableItems.length === 0 &&  (
+          {tableItems.length === 0 && isSearching &&  (
             <td className="text-2xl text-red-400">Not Found</td>
           )}
           {tableItems
@@ -151,15 +213,15 @@ export default function Table({
                     <td className="px-6 py-4">
                       {item.edit ? (
                         
-                        <input type="number" name="priceBuy" className="w-14 rounded-sm outline-none border-solid border border-black" /> 
+                        <input type="number" onChange={(e) => handleMedChange(e, item.id)} name="priceBuy" className="w-14 rounded-sm outline-none border-solid border border-black" /> 
                       ): (
                         
                          item.priceBuy
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      {item.edit ?(
-                      <input type="number" name="priceSell" className="w-14 rounded-sm outline-none border-solid border border-black" />
+                      {item.edit === true ?(
+                      <input type="number" onChange={(e) => handleMedChange(e, item.id)} name="priceSell" className="w-14 rounded-sm outline-none border-solid border border-black" />
 
                       ): (
                         item.priceSell
@@ -173,7 +235,9 @@ export default function Table({
                           <p
                             onClick={() => {
                               if (setSelledMed !== null) {
-                                setIsBuying(false);
+                                if(setIsBuying) {
+                                  setIsBuying(false);
+                                }
                                 setSelledMed(item);
                               }
                             }}
@@ -184,7 +248,9 @@ export default function Table({
                           <Plus
                             onClick={() => {
                               if (setSelledMed !== null) {
-                                setIsBuying(true);
+                                if(setIsBuying) {
+                                  setIsBuying(true);
+                                }
                                 setSelledMed(item);
                               }
                             }}
@@ -195,7 +261,11 @@ export default function Table({
                       )}
                     </td>
                     <td>
-                      <Edit className="font-bold text-lg cursor-pointer" />
+                      {item.edit ? (
+                        <button onClick={() => handleSubmitEdit(item.id)} className="border border-solid border-black px-2 py-1 text-black font-semibold rounded-lg">save</button>
+                      ): (
+                      <Edit onClick={() => handleEdit(item)} className="font-bold text-lg cursor-pointer" />
+                      )}
                     </td>
                   </tr>
                 }

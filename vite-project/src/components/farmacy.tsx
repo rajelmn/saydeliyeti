@@ -209,7 +209,7 @@ export function Farmacy({
   return (
     <div className="h-screen w-[calc(100vw-300px)] overflow-y-auto">
       <Header room="pharmacetique" />
-      <main className="w-full h-[92vh]  p-14">
+      <main className="w-full h-[92vh]">
         <div className="content mt-9">
           <button
             className="flex p-2 items-center font-bold bg-blue-600 mb-4 rounded-lg text-white"

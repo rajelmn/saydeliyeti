@@ -38,7 +38,7 @@ export default interface TableProps {
     // setIsSelling: (arg: boolean) => void ,
     setSelledMed: ((arg: medicamentObj | null) => void) | null,
     readOnly: boolean,
-    setIsBuying: ((arg: boolean) => void)  ,
+    setIsBuying: ((arg: boolean) => void) | null  ,
   }
 
 export interface SellModalProps {

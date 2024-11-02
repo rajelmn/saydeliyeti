@@ -7,7 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -62,25 +62,13 @@ app.post("/storeMedicament", (req: any, _res) => {
   }
 });
 
-// app.post("/buy", (req, res) => {
-//   const { qty, buyQty, stock, id }: { qty: number , buyQty: number, stock: number, id: string } = req.body;
-//   console.log(buyQty, qty);
-//   console.log(req.body);
-//   // const formattedDate = format(new Date(), "yyyy-MM-dd");
-// //   const updateStatistics =
-// //     db.prepare(`INSERT INTO statistics (date, purchases) VALUES (@date, @purchases) 
-// // ON CONFLICT(date) DO UPDATE SET
-// // date = @date,
-// // purchases = purchases + @purchases
-// // `);
 
-
-// //   // updateStatistics.run(date, qty, (priceSell - priceBuy) * qty, qty);
-// //   updateStatistics.run({
-// //     date: formattedDate,
-// //     purchases: buyQty,
-// //   });
-// })
+app.post('/editMed' , (req, res) => {
+  const {priceBuy, priceSell, id}= req.body;
+  const updatingMed = db.prepare("UPDATE list SET priceBuy = ?, priceSell = ? WHERE id = ?");
+  updatingMed.run(+priceBuy, +priceSell, id);
+  res.status(200).json({message: 'the field is updated'})
+})
 
 
 app.post("/updateMed", (req, res) => {
@@ -89,11 +77,7 @@ app.post("/updateMed", (req, res) => {
     console.log('updating before gta 6')
     const updateMed: medicamentObj = req.body;
     const { soldQty }: { soldQty: number } = req.body;
-    const { stock, id, date, priceBuy, priceSell } = updateMed;
-    console.log(formattedDate, date);
-    console.log(formattedDate === date);
-    console.log("updating");
-    console.log(typeof stock);
+    const { stock, id, priceBuy, priceSell } = updateMed;
 
     const update = db.prepare(
       "UPDATE list SET stock = ? WHERE id = ?"
