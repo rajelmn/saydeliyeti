@@ -5,16 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "node server/server.js",
+    "start": "npx tsx server/server.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "better-sqlite3": "^11.5.0",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "lucide-react": "^0.454.0",
     "nodemon": "^3.1.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -26,6 +29,7 @@
     "@eslint/js": "^9.11.1",
     "@types/better-sqlite3": "^7.6.11",
     "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.0",
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.2",

@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Farmacy from './components/farmacy.tsx';
+import LoginPage from "./components/login.tsx";
 import App from "./App.tsx";
 import Home from './components/home.tsx';
 import "./index.css";
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
     }
     ]
   },
+  {
+    path: "/login",
+    element: <LoginPage />
+  }
 ]);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

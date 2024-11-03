@@ -1,11 +1,13 @@
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { statistics } from "../../server/interface.ts";
 import Header from "./header.tsx";
 export default function Home() {
   const [details, setDetails] = useState<statistics>();
+  const navigate = useNavigate();
   const dateValue: string = format(new Date(), "yyyy-MM-dd");
   console.log(dateValue)
   async function handleDateChange(e: React.FormEvent<HTMLFormElement>) {
@@ -30,15 +32,33 @@ export default function Home() {
 
   useEffect(() => {
     async function getStatistics() {
-      const res = await fetch("/api/statistics", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ date: dateValue }),
-      }).then(res => res.json());
-      setDetails(res);
+      try {
+        const res = await fetch("/api/statistics", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ date: dateValue }),
+        }).then(res => res.json());
+        setDetails(res);
+      } catch(err) {
+        console.log(err)
+      }
     }
+
+    async function AuthenticateUser() {
+      try {
+        const authres = await fetch('/api/validateUser').then(res => res.json());
+        if(!authres.isAdmin) {
+          navigate('/');
+          console.log('hmm')
+        }
+        // alert(authres.ok)
+      } catch(err) {
+        console.log(err)
+      }
+    }
+    AuthenticateUser()
     getStatistics();
   }, [])
 

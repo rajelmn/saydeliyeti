@@ -31,7 +31,6 @@ export default function App() {
     try {
       alert('wasup')
       e.preventDefault();
-      console.log(selledMed)
       if (!selledMed) return alert("no medicamnet selected");
 
       if (+selledMed.qty < e.target?.qty) {
@@ -39,7 +38,6 @@ export default function App() {
       }
       setPharmacyItems((prev) =>
         prev.map((item) => {
-          console.log(typeof item.qty, 'typeof')
           if (item.id === selledMed?.id) {
             return {
               ...item,
@@ -51,7 +49,7 @@ export default function App() {
         })
       );
 
-      const res = await fetch("/updateMed", {
+      const res = await fetch("/api/updateMed", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -74,12 +72,10 @@ export default function App() {
     try {
       alert('buying')
       e.preventDefault();
-      console.log(selledMed)
       if (!selledMed) return alert("no medicamnet selected");
 
       setPharmacyItems((prev) =>
         prev.map((item) => {
-          console.log(typeof item.qty, 'typeof')
           if (item.id === selledMed?.id) {
             return {
               ...item,
@@ -91,7 +87,7 @@ export default function App() {
       );
 
       setSelledMed(null);
-      const res = await fetch("/buy", {
+      const res = await fetch("/api/buy", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +108,6 @@ export default function App() {
 
   async function handleFormSubmit(e: any) {
     e.preventDefault();
-    console.log(e.target);
     try {
       const date = new Date();
       const medicamentObj: Item = {
@@ -139,7 +134,7 @@ export default function App() {
       }
       setPharmacyItems((prev) => [...prev, medicamentObj]);
       setShowNew((prev: boolean) => !prev);
-      const res = await fetch("/storeMedicament", {
+      const res = await fetch("/api/storeMedicament", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -148,19 +143,15 @@ export default function App() {
       });
       // const allMeds = await res.json();
       // console.log(allMeds);
-      console.log(res.ok);
     } catch (err) {
       console.log(err);
     }
   }
   useEffect(() => {
-    console.log("fires");
     async function getAllMeds() {
       try {
-        const res = await fetch("/getMedicament");
+        const res = await fetch("/api/getMedicament");
         const allMeds: Item[] = await res.json();
-        console.log(res.ok);
-        console.log(allMeds, "all the fucking meds");
         setPharmacyItems(allMeds);
       } catch (err) {
         console.log(err);

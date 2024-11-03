@@ -1,17 +1,21 @@
-import express from "express";
+import express, { NextFunction } from "express";
 import Database from "better-sqlite3";
 // import sqlite3 from "sqlite3";
 import { medicamentObj } from "./interface";
 import { format } from "date-fns";
 import path from "node:path";
+import session from 'express-session'
 import { fileURLToPath } from "node:url";
-
+declare module 'express-session' {
+  interface SessionData {
+    authStatus?: {isAdmin?: boolean , isLoggedIn?: boolean}
+  }
+}
 const __filename = fileURLToPath(import.meta.url);
- const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-// const verbose = sqlite3.verbose();
 const db = new Database("mydb", {verbose: console.log});
 
 db.exec(`CREATE TABLE IF NOT EXISTS statistics(
@@ -30,23 +34,65 @@ db.exec(`CREATE TABLE IF NOT EXISTS statistics(
     id TEXT PRIMARY KEY
    )`)
 
-  // const insertData = db.prepare('INSERT INTO list (name, id) VALUES(?, ?)')
-
-  // const allData = db.prepare('SELECT * FROM medicaments').all();
-  // const names = allData.map((item: any) => item.name);
-  // console.log(names)
-
-  // names.forEach((item) => {
-  //   insertData.run(item, crypto.randomUUID())
-  // })
-  // const addingtoTable = db.prepare()
 
 app.use(express.json());
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie :{
+        // httpOnly: true,
+        sameSite: "strict",
+        // secure: true,
+        // maxAge: 1000 * 60 * 20 // 20 minute
+    },
+  })
+)
 // app.use(cors())
-app.get("/delete", (_req, res) => {
-  db.prepare("DELETE FROM medicaments");
-  res.send("welcome");
-});
+// function isAuthenticated(req: any , res: any, next: any): void {
+//   if(!req.session.authStatus.isLogged) {
+//     return res.status(401).json({message: "not authenticated"})
+//   }
+//   next();
+// }
+
+// app.use(isAuthenticated);
+
+app.get('/validateUser', (req, res) => {
+  if (req.session.authStatus?.isAdmin === true) {
+     res.status(200).json({ isAdmin: true });
+     console.log('first')
+  }
+  
+  if (!req.session.authStatus?.isLoggedIn) {
+    console.log('second')
+     res.status(401).json({ message: "not authorized" });
+  }
+  
+  if (!req.session.authStatus?.isAdmin && req.session.authStatus?.isLoggedIn) {
+    console.log('third')
+     res.status(200).json({ isAdmin: false });
+  }
+})
+app.post('/login', (req, res) => {
+  const userData = req.body;
+  if(!userData.password.length || !userData.username.length) {
+    res.status(403).json({messagse: "please complete all the required fields"})
+  }
+  if(userData.password === process.env.ADMIN_PASSWORD && userData.username === process.env.USER) {
+    req.session.authStatus = {isAdmin: true, isLoggedIn: true};
+    res.status(200).json({message: "admin"})
+  }
+  else if(userData.password === process.env.ADMIN_PASSWORD && userData.username === process.env.USER) {
+    req.session.authStatus = {isAdmin: false, isLoggedIn: true};
+    res.status(200).json({message: "worker"})
+  }
+  else {
+    req.session.authStatus = {isAdmin: false , isLoggedIn: false}
+    res.status(401).json({message: "wrong password or username"})
+  }
+})
 
 app.post("/storeMedicament", (req: any, _res) => {
   try {
@@ -74,7 +120,7 @@ app.post('/editMed' , (req, res) => {
 app.post("/updateMed", (req, res) => {
   try {
     const formattedDate = format(new Date(), "yyyy-MM-dd");
-    console.log('updating before gta 6')
+    // console.log('updating before gta 6')
     const updateMed: medicamentObj = req.body;
     const { soldQty }: { soldQty: number } = req.body;
     const { stock, id, priceBuy, priceSell } = updateMed;
@@ -108,23 +154,20 @@ app.post("/updateMed", (req, res) => {
 app.get('/search/:word', (req, res) => {
   const {word} = req.params;
   const searchTerm = `%${word}%`
-  console.log(searchTerm)
+  // console.log(searchTerm)
   const getWords = db.prepare('SELECT * FROM list WHERE medicament LIKE @param LIMIT 20')
   const searchRes = getWords.all({param: searchTerm});
   res.status(200).json(searchRes)
-  console.log(searchRes)
+  // console.log(searchRes)
 
 })
 
 app.get("/getMedicament", (req, res) => {
-  const smth = req?.body;
-  console.log(smth);
+
   try {
     const getMeds = db
       .prepare("SELECT * FROM list LIMIT 100 ")
       .all();
-
-    console.log(getMeds)
     res.status(200).json(getMeds);
   } catch (err) {
     console.log(err);
@@ -133,11 +176,8 @@ app.get("/getMedicament", (req, res) => {
 
 app.post("/statistics", (req, res) => {
   const { date }: { date: string } = req.body;
-  console.log(req.body);
-  console.log(date);
   const query = db.prepare("SELECT * FROM statistics WHERE date = ?");
   const stats = query.get(date);
-  console.log(stats);
   res.status(200).json(stats);
 });
 

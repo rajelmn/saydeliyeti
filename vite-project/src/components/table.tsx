@@ -12,9 +12,7 @@ export default function Table({
   // console.log(medicament, 'god damn')
   const [tableItems, setTableItems] =
     useState<TableProps["medicament"]>([]);
-    console.log(tableItems, 'another goddman');
     const [search, setSearch] = useState('');
-    console.log(tableItems)
     const [isSearching, setIsSearching] = useState<boolean>(false);
 
     function handleEdit(med: medicamentObj) {
@@ -31,6 +29,7 @@ export default function Table({
         console.log(err)
       }
     } 
+
     function handleMedChange(e: React.ChangeEvent<HTMLInputElement>, id: string): void {
       const {name} = e.target;
       setTableItems(prev => 
@@ -46,7 +45,6 @@ export default function Table({
     async function handleSubmitEdit(id: string) {
       try {
         const [editedItem] = tableItems.filter(item => item.id === id);
-        console.log(typeof editedItem.priceBuy, typeof editedItem.priceSell)
         if(+editedItem.priceSell < +editedItem.priceBuy) {
           return alert("le prix vendu de l'objet ne peut être inférieur au prix d'achat")
         }
@@ -56,7 +54,7 @@ export default function Table({
           })
         )
 
-        const res = await fetch("/editMed", {
+        const res = await fetch("/api/editMed", {
           method: "POST", 
           headers: {
             "Content-Type": "application/json"
@@ -77,12 +75,10 @@ export default function Table({
   }, [medicament]);
 
     useEffect(() => {
-      console.log('search', search)
       async function handleSearch(): Promise<void> {
         try {
-          const res = await fetch(`/search/${search}`);
+          const res = await fetch(`/api/search/${search}`);
             const searchedItems = await res.json();
-          console.log(res)
           if(!search.length) {
            return setTableItems(medicament);
           }
