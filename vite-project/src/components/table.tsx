@@ -59,7 +59,7 @@ export default function Table({
         })
       );
 
-      const res = await fetch("/api/editMed", {
+      const res = await fetch("/editMed", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export default function Table({
   async function handleDropDownChange(e: React.ChangeEvent<HTMLSelectElement>) {
     try {
       if (!search && e.target.value) {
-        const res = await fetch(`/api/letterSearch/${e.target.value}`);
+        const res = await fetch(`/letterSearch/${e.target.value}`);
         if (res.ok) {
           const ordredItems = await res.json();
           console.log(ordredItems)
