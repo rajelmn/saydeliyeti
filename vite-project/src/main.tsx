@@ -4,7 +4,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Farmacy from './components/farmacy.tsx';
 import LoginPage from "./components/login.tsx";
 import App from "./App.tsx";
-import Home from './components/home.tsx';
+import Home from './components/statistics.tsx';
 import "./index.css";
 import LimitedMeds from "./components/limitedMeds.tsx";
 const router = createBrowserRouter([

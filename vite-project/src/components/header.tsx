@@ -1,4 +1,4 @@
-import { MdModeNight } from "react-icons/md";
+// import { MdModeNight } from "react-icons/md";
 import { IoIosSearch } from "react-icons/io";
 
 export default function Header({ room }: { room: string }) {
@@ -10,7 +10,7 @@ export default function Header({ room }: { room: string }) {
           <IoIosSearch />
           <input type="text" placeholder="search" className="pl-2 outline-none border-none" />
         </div>
-        <MdModeNight className="text-2xl cursor-pointer" />
+        {/* <MdModeNight className="text-2xl cursor-pointer" /> */}
       </div>
     </header>
   );

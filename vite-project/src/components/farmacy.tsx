@@ -9,10 +9,8 @@ import { useEffect, useState } from "react";
 interface Item {
   medicament: string;
   stock: number;
-  qty: number;
   priceSell: number;
   priceBuy: number;
-  date: string;
   id: string;
 }
 
@@ -32,16 +30,11 @@ export default function App() {
       alert('wasup')
       e.preventDefault();
       if (!selledMed) return alert("no medicamnet selected");
-
-      if (+selledMed.qty < e.target?.qty) {
-        return alert("you are selling more than you chave");
-      }
       setPharmacyItems((prev) =>
         prev.map((item) => {
           if (item.id === selledMed?.id) {
             return {
               ...item,
-              qty: +item.qty + +e.target.qty.value,
               // date: new Date().toDateString()
               stock: item.stock - +e.target.qty.value,
             };
@@ -49,14 +42,13 @@ export default function App() {
         })
       );
 
-      const res = await fetch("/api/updateMed", {
+      const res = await fetch("/updateMed", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...selledMed,
-          qty: selledMed ? selledMed?.qty + +e.target.qty.value : 0,
           soldQty: +e.target.qty.value,
           stock: selledMed ? selledMed?.stock - +e.target.qty.value : 0,
         }),
@@ -87,7 +79,7 @@ export default function App() {
       );
 
       setSelledMed(null);
-      const res = await fetch("/api/buy", {
+      const res = await fetch("/updateMed", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -109,32 +101,27 @@ export default function App() {
   async function handleFormSubmit(e: any) {
     e.preventDefault();
     try {
-      const date = new Date();
       const medicamentObj: Item = {
         medicament: e.target.medicament.value,
         stock: e.target.stock.value,
-        qty: e.target.qty.value,
         priceSell: e.target.priceSell.value,
         priceBuy: e.target.priceBuy.value,
-        date: e.target.date.value || date.toTimeString(),
         id: crypto.randomUUID(),
       };
-      const {stock , qty, priceSell, priceBuy} = medicamentObj;
-      if(+stock < +qty) {
-        return alert('the stock cant be less than the selled qty')
-      }
+      const {stock , priceSell, priceBuy} = medicamentObj;
       if(+priceSell < +priceBuy) {
         return alert('the sell price shouldnt be less than the real price')
       }
       if(pharmacyItems.find(item => item.medicament === medicamentObj.medicament)) {
         return alert ('the medicament already exist, did you meant to insert another version ?')
       }
-      if(+stock <= 0 || +qty <= 0 || +priceSell <= 0 || +priceBuy <= 0) {
+      if(+stock <= 0 || +priceSell <= 0 || +priceBuy <= 0) {
         return alert('input values shouldnt have any value less or equal to 0')
       }
       setPharmacyItems((prev) => [...prev, medicamentObj]);
       setShowNew((prev: boolean) => !prev);
-      const res = await fetch("/api/storeMedicament", {
+      // const res = await 
+      fetch("/storeMedicament", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -150,7 +137,7 @@ export default function App() {
   useEffect(() => {
     async function getAllMeds() {
       try {
-        const res = await fetch("/api/getMedicament");
+        const res = await fetch("/getMedicament");
         const allMeds: Item[] = await res.json();
         setPharmacyItems(allMeds);
       } catch (err) {
@@ -203,10 +190,10 @@ export function Farmacy({
       <main className="w-full h-[92vh]">
         <div className="content mt-9">
           <button
-            className="flex p-2 items-center font-bold bg-blue-600 mb-4 rounded-lg text-white"
+            className="flex bg-[#3ea43e] m-8 p-2 items-center font-bold mb-4 rounded-lg text-white"
             onClick={handleClick}
           >
-            <span>Add New</span>
+            <span>Ajouter</span>
             <MdAdd className="text-white" />
           </button>
 

@@ -7,7 +7,7 @@ export default function LimitedMeds() {
     useEffect(() => {
         async function getLimitedMeds() {
             try {
-                const res = await fetch('/api/limitedMeds');
+                const res = await fetch('/limitedMeds');
                 const limitedMeds = await res.json();
                 console.log(limitedMeds)
                 setMeds(limitedMeds);

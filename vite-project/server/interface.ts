@@ -2,12 +2,21 @@
 export type medicamentObj = {
     medicament: string;
     stock: number;
-    qty: number;
     priceSell: number;
     priceBuy: number;
-    date: string;
     id: string;
     edit?: boolean,
+}
+
+export type changePasswordObj = {
+    oldPassword: string,
+    newPassword: string,
+    isAdmin: boolean,
+}
+
+export type passwordChangeStatus = {
+    status: number,
+    message: string,
 }
 
 export type statistics = {
@@ -29,10 +38,10 @@ export default interface TableProps {
     medicament: {
         medicament: string;
         stock: number;
-        qty: number;
+        // qty: number;
         priceSell: number;
         priceBuy: number;
-        date: string;
+        // date: string;
         id: string;
     }[],
     // setIsSelling: (arg: boolean) => void ,

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { statistics } from "../../server/interface.ts";
 import Header from "./header.tsx";
-export default function Home() {
+export default function Statistics() {
   const [details, setDetails] = useState<statistics>();
   const navigate = useNavigate();
   const dateValue: string = format(new Date(), "yyyy-MM-dd");
@@ -14,7 +14,7 @@ export default function Home() {
     try {
       const date = e.currentTarget.date.value;
       console.log(date === dateValue);
-      const res = await fetch("/api/statistics", {
+      const res = await fetch("/statistics", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export default function Home() {
   useEffect(() => {
     async function getStatistics() {
       try {
-        const res = await fetch("/api/statistics", {
+        const res = await fetch("/statistics", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -48,10 +48,9 @@ export default function Home() {
 
     async function AuthenticateUser() {
       try {
-        const authres = await fetch('/api/validateUser').then(res => res.json());
+        const authres = await fetch('/validateUser').then(res => res.json());
         if(!authres.isAdmin) {
           navigate('/');
-          console.log('hmm')
         }
         // alert(authres.ok)
       } catch(err) {
@@ -69,7 +68,7 @@ export default function Home() {
         <div className="flex-grow-[3]">
           <h2 className="font-bold">Statistics</h2>
           <p className="text-[black]/40">
-            View the details about the pharamacy sales
+          Voir le détail des ventes en pharmacie
           </p>
         </div>
         <form onChange={handleDateChange} className="flex-grow">
@@ -83,13 +82,13 @@ export default function Home() {
           />
         </form>
       </div>
-      <main className=" grid grid-cols-4 p-20 w-full justify-between">
+      <main className=" grid grid-cols-3 p-20 w-full justify-between">
         <div className="card-shadow m-3 py-4 px-2 ">
           <div className="flex px-1 items-center justify-between">
-            <p className="flex-grow-[3]">profits</p>
-            <button className=" button-shadow py-2 text-xs font-bold rounded-lg flex-grow">
+            <p className="flex-grow-[3]">Benefits</p>
+            {/* <button className=" button-shadow py-2 text-xs font-bold rounded-lg flex-grow">
               See Detail
-            </button>
+            </button> */}
           </div>
 
           <div className="font-bold flex items-center mt-2 text-3xl">
@@ -99,22 +98,10 @@ export default function Home() {
         </div>
         <div className="card-shadow rounded-lg m-3 py-4 px-2 ">
           <div className="flex px-1 items-center justify-between">
-            <p className="flex-grow-[3]">purchases</p>
-            <button className=" button-shadow py-2 text-xs font-bold rounded-lg flex-grow">
+            <p className="flex-grow-[3]">Quantie vendue</p>
+            {/* <button className=" button-shadow py-2 text-xs font-bold rounded-lg flex-grow">
               See Detail
-            </button>
-          </div>
-
-          <div className="font-bold flex items-center mt-2 text-3xl">
-            <p>{details?.purchases || 0}</p>
-          </div>
-        </div>
-        <div className="card-shadow rounded-lg m-3 py-4 px-2 ">
-          <div className="flex px-1 items-center justify-between">
-            <p className="flex-grow-[3]">Solds</p>
-            <button className=" button-shadow py-2 text-xs font-bold rounded-lg flex-grow">
-              See Detail
-            </button>
+            </button> */}
           </div>
 
           <div className="font-bold flex items-center mt-2 text-3xl">
@@ -123,10 +110,10 @@ export default function Home() {
         </div>
         <div className="card-shadow m-3 py-4 px-2 ">
           <div className="flex px-1 items-center justify-between">
-            <p className="flex-grow-[3]">how much we sold</p>
-            <button className=" button-shadow py-2 text-xs font-bold rounded-lg flex-grow">
+            <p className="flex-grow-[3]">Caise</p>
+            {/* <button className=" button-shadow py-2 text-xs font-bold rounded-lg flex-grow">
               See Detail
-            </button>
+            </button> */}
           </div>
 
           <div className="font-bold flex items-center mt-2 text-3xl">
